@@ -3,6 +3,7 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta 
 import os
+import psycopg2
 import sys
 
 # DATABASE
@@ -139,8 +140,8 @@ default_args = {
 
 with DAG(
     default_args=default_args,
-    dag_id='etl_scrapy',
-    start_date=datetime(2022, 9, 6),
+    dag_id='clean_db',
+    start_date=datetime(2022, 9, 8),
     schedule_interval='30 0 * * *') as dag:
 
     create_connection = PythonOperator(
