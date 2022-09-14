@@ -75,3 +75,25 @@ helm install airflow apache-airflow/airflow --namespace airflow --debug —timeo
 # Port forward 8080:8080
 kubectl port-forward svc/airflow-webserver 8080:8080 -n airflow --context kind-airflow-cluster
 ```
+### Debug
+```bash
+# 1. Delete the Helm release
+helm delete airflow --namespace airflow
+
+# 2. Check your PODs
+kubectl get pods -n airflow
+
+# 3. If airflow-migrations is in ContainerCreating state delete it
+kubectl get jobs -n airflow
+kubectl delete jobs <pods_name_of_airflow_migrations> -n airflow
+
+# 4. Install the chart again
+helm install airflow apache-airflow/airflow --namespace airflow --debug --timeout 10m0s
+```
+### Get Values
+Get the configuration file of the Helm chart make changes to Airflow instance in deployment.
+
+````bash
+# Get the Chart values
+helm show values apache-airflow/airflow > values.yaml
+```
