@@ -93,7 +93,25 @@ helm install airflow apache-airflow/airflow --namespace airflow --debug --timeou
 ### Get Values
 Get the configuration file of the Helm chart make changes to Airflow instance in deployment.
 
-````bash
+```bash
 # Get the Chart values
 helm show values apache-airflow/airflow > values.yaml
+```
+#### Update Airflow deployment
+```bash
+# Check the current revision
+helm ls -n airflow
+
+# Upgrade the chart
+helm upgrade --install airflow apache-airflow/airflow -n airflow -f values.yaml --debug
+
+# Check after
+helm ls -n airflow
+```
+#### Configure airflow instance
+in the values.yaml file add
+```bash
+extraEnv: |
+	- name: AIRFLOW__CORE__LOAD_EXAMPLES
+		value: 'True'
 ```
