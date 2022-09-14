@@ -1,38 +1,77 @@
 # Airflow-ETL
-Running ETL workflow in Apache Airflow
+Deploy Apache Airflow workflow with Helm Chart.
+## Requirements
 
-## Docker commands
+- Kubectl
+- Helm
+- Kind
+- Docker
 
-### Initialize airflow instance
+### Kind Installation
 ```bash
-docker-compose up airflow-init
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.15.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
 ```
+## Setup
 ```bash
-docker-compose up 
+# Create a kubernetes cluster of 1 control plane and 3 worker nodes
+kind create cluster --name airflow-cluster --config kind-cluster.yaml
 ```
-### check if containers are up and running
+
 ```bash
-docker ps
+# Check the cluster info
+kubectl cluster-info
 ```
-### shut down services
+
 ```bash
-docker-compose down
+# Check the nodes with kubectl
+kubectl get nodes -o wide
 ```
-### execute bash commands in container
+
 ```bash
-docker exec -it <container name> bash
+# Add the official repository of the Airflow Helm Chart
+helm repo add apache-airflow https://airflow.apache.org
 ```
-### extending  docker image
-<!-- ```bash
-docker-compose up -d --no-deps --build airflow-webserver airflow-scheduler
-``` -->
+
 ```bash
-docker build . --tag extending_airflow:latest
+# Update the repo
+helm repo update
 ```
-Change image name from apache-airflow IN `docker-compose.yaml` file.
+
 ```bash
-image: ${AIRFLOW_IMAGE_NAME:-extending_airflow:latest}
+# Create namespace airflow
+kubectl create namespace airflow
 ```
+
 ```bash
-docker-compose up -d --no-deps --build airflow-webserver airflow-scheduler
+# Check the namespace 
+kubectl get namespaces
+```
+
+```bash
+# Install the Airflow Helm Chart
+helm install airflow apache-airflow/airflow --namespace airflow --debug
+```
+
+```bash
+# Get pods
+kubectl get pods -n airflow
+```
+
+```bash
+# Check release
+helm ls -n airflow
+```
+
+```bash
+# If for some reasons the release is stuck in pending-install or timed out
+# Resinstall the chart
+helm delete airflow --namespace airflow
+helm install airflow apache-airflow/airflow --namespace airflow --debug —timeout 10m0s
+```
+
+```bash
+# Port forward 8080:8080
+kubectl port-forward svc/airflow-webserver 8080:8080 -n airflow --context kind-airflow-cluster
 ```
