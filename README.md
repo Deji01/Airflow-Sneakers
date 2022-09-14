@@ -115,3 +115,7 @@ extraEnv: |
 	- name: AIRFLOW__CORE__LOAD_EXAMPLES
 		value: 'True'
 ```
+#### Clear Everything
+```bash
+kind delete cluster --name airflow-cluster
+```
