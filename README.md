@@ -123,3 +123,7 @@ kind delete cluster --name airflow-cluster
 ```bash
 kind load docker-image <image name> --name <cluster name>
 ```
+#### Create secret key in Kubernetes cluster
+```bash
+kubectl create secret generic <file name> --from-file=gitSshKey=<private ssh key location> -n airflow
+```

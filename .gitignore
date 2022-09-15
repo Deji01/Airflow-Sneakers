@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 */output.txt
 id_rsa*
+*/airflow-ssh-git-secret
