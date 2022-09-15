@@ -119,3 +119,7 @@ extraEnv: |
 ```bash
 kind delete cluster --name airflow-cluster
 ```
+#### Load Docker image on Kubernetes cluster
+```bash
+kind load docker-image <image name> --name <cluster name>
+```
